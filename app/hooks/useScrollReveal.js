@@ -9,26 +9,31 @@ export default function useScrollReveal() {
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
-    const revealEls = document.querySelectorAll(".reveal");
-    revealEls.forEach((el) => {
-      const items = el.querySelectorAll(".reveal-item");
-      const itemTargets = items.length ? items : el.children.length > 1 ? el.children : el;
-      const stagger = 0;
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-      gsap.from(itemTargets, {
-        opacity: 0,
-        y: 32,
-        duration: 0.9,
-        ease: "power3.out",
-        stagger,
-        scrollTrigger: {
-          trigger: el,
-          start: "top 85%",
-          toggleActions: "play none none none",
-          once: true,
-        },
+    const revealEls = document.querySelectorAll(".reveal");
+    if (!isMobile && !reduceMotion) {
+      revealEls.forEach((el) => {
+        const items = el.querySelectorAll(".reveal-item");
+        const itemTargets = items.length ? items : el.children.length > 1 ? el.children : el;
+        const stagger = 0;
+
+        gsap.from(itemTargets, {
+          opacity: 0,
+          y: 32,
+          duration: 0.9,
+          ease: "power3.out",
+          stagger,
+          scrollTrigger: {
+            trigger: el,
+            start: "top 85%",
+            toggleActions: "play none none none",
+            once: true,
+          },
+        });
       });
-    });
+    }
 
     const revObs = new IntersectionObserver(
       (entries) => {

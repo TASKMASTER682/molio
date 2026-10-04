@@ -1,5 +1,7 @@
 /** @type {import('tailwindcss').Config} */
-export default {
+import typography from "@tailwindcss/typography";
+
+const config = {
   content: [
     "./app/**/*.{js,ts,jsx,tsx}",
     "./components/**/*.{js,ts,tsx}"
@@ -11,6 +13,9 @@ export default {
         neon:  { purple:'#7b2fff', magenta:'#ff00ff' },
       },
       fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        serif: ['DM Serif Display', 'Georgia', 'serif'],
+        mono: ['IBM Plex Mono', 'ui-monospace', 'monospace'],
         inter: ['Inter', 'sans-serif'],
         anton: ['Anton', 'sans-serif'],
         boldonse: ['Boldonse', 'system-ui'],
@@ -36,6 +41,8 @@ export default {
     },
   },
   plugins: [
-    require('@tailwindcss/typography'),
+    typography,
   ],
 };
+
+export default config;

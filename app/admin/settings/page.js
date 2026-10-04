@@ -29,10 +29,13 @@ export default function SettingsPage() {
     if (!settings) return;
     setSaving(true);
     try {
+      // resumeUrl holds the stored file blob — never send it back via PUT
+      const payload = { ...settings };
+      delete payload.resumeUrl;
       await fetch(`${API_URL}/api/settings`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(settings),
+        body: JSON.stringify(payload),
       });
       alert("Settings saved!");
     } catch (e) {

@@ -45,7 +45,7 @@ export function Navbar() {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-[1000] h-16 flex items-center justify-between px-8 border-b border-white/[0.06] backdrop-blur-xl bg-[#0a0a0a]/70">
+      <nav className="fixed top-0 left-0 right-0 z-[1000] h-16 flex items-center justify-between px-8 border-b border-white/[0.06] bg-[#0a0a0a]/95">
         <Link href="/" className="text-cyan bg-gradient-to-r from-cyan to-neon-purple bg-clip-text text-transparent text-xl font-playfair font-bold tracking-wider select-none">
           The Technocrat
         </Link>
@@ -96,7 +96,7 @@ export function Navbar() {
         </button>
       </nav>
       
-      <div className={`${mobileOpen ? 'flex' : 'hidden'} md:hidden fixed top-16 left-0 right-0 z-[999] bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/[0.06] px-6 py-4 flex-col gap-4`}>
+      <div className={`${mobileOpen ? 'flex' : 'hidden'} md:hidden fixed top-16 left-0 right-0 z-[999] bg-[#0a0a0a]/98 border-b border-white/[0.06] px-6 py-4 flex-col gap-4`}>
         <Link href="/" className="text-white/60 no-underline py-2 border-b border-white/[0.06] block text-sm" onClick={() => setMobileOpen(false)}>
           SAYED
         </Link>

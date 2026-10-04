@@ -1,15 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 export function BlockEditorModal({ isOpen, onClose, blockType, onInsert }) {
   const [data, setData] = useState(null);
+  const openKey = isOpen ? blockType : null;
+  const [prevKey, setPrevKey] = useState(openKey);
 
-  useEffect(() => {
-    if (isOpen) {
-      setData(null);
-    }
-  }, [isOpen, blockType]);
+  if (openKey !== prevKey) {
+    setPrevKey(openKey);
+    setData(null);
+  }
 
   if (!isOpen || !blockType) return null;
 

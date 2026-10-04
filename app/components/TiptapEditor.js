@@ -197,7 +197,7 @@ export function TiptapEditor({ content, onChange, editable = true }) {
             className={`p-2 rounded hover:bg-white/10 ${editor.isActive("blockquote") ? "bg-white/10 text-cyan" : "text-white/60"}`}
             title="Quote"
           >
-            "
+            &ldquo;
           </button>
           <button
             type="button"

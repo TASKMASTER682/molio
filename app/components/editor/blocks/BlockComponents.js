@@ -28,7 +28,7 @@ export function QuoteBlockView({ text, author, style = "default" }) {
   
   return (
     <blockquote className={`pull-quote ${styleClass}`}>
-      {style === "glow" && <span className="quote-icon">"</span>}
+      {style === "glow" && <span className="quote-icon">&ldquo;</span>}
       <p>{textContent}</p>
       {authorContent && <cite>— {authorContent}</cite>}
     </blockquote>
