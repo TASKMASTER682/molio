@@ -1,37 +1,11 @@
-// app/blog/page.js
-"use client";
-
-import { useEffect, useState } from "react";
+// app/blog/page.js — Server component with ISR
 import Link from "next/link";
+import { getBlogs } from "../../lib/data";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+export const revalidate = 60;
 
-export default function BlogPage() {
-  const [blogs, setBlogs] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchBlogs() {
-      try {
-        const res = await fetch(`${API_URL}/api/blogs`);
-        const json = await res.json();
-        setBlogs(Array.isArray(json) ? json : Array.isArray(json?.data) ? json.data : []);
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchBlogs();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-cyan text-xl font-playfair animate-pulse">Loading...</div>
-      </div>
-    );
-  }
+export default async function BlogPage() {
+  const blogs = await getBlogs();
 
   return (
     <div className="min-h-screen pt-32 pb-20 px-4 md:px-8 max-w-7xl mx-auto">

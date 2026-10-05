@@ -7,7 +7,8 @@ import { Navbar } from "./Navbar";
 export function NavbarWrapper() {
   const pathname = usePathname();
   
-  if (pathname !== "/") return null;
+  // Admin has its own sidebar layout — skip the top navbar there
+  if (pathname?.startsWith("/admin")) return null;
   
   return <Navbar />;
 }

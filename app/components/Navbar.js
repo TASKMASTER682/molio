@@ -11,6 +11,12 @@ export function Navbar() {
   const pathname = usePathname();
   const { user, logout, loading } = useAuth();
   const isHomePage = pathname === "/";
+  const [prevPathname, setPrevPathname] = useState(pathname);
+
+  if (pathname !== prevPathname) {
+    setPrevPathname(pathname);
+    setMobileOpen(false);
+  }
 
   useEffect(() => {
     if (!isHomePage) return;
@@ -32,6 +38,13 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isHomePage]);
 
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
+
   const navItems = [
     { href: "#hero", label: "Home" },
     { href: "#about", label: "About" },
@@ -40,8 +53,6 @@ export function Navbar() {
     { href: "#journey", label: "Journey" },
     { href: "#contact", label: "Contact" },
   ];
-
-  if (loading) return null;
 
   return (
     <>
@@ -62,43 +73,50 @@ export function Navbar() {
           </ul>
         )}
         
-        <div className="flex gap-6 pl-6 border-l border-white/[0.06] items-center">
+        <div className="hidden md:flex gap-6 pl-6 border-l border-white/[0.06] items-center">
           <Link href="/blog" className="text-white/40 no-underline text-[11px] tracking-widest uppercase hover:text-cyan transition-colors duration-300">
             Blog
           </Link>
           
-          {user ? (
-            <>
-              <Link href="/admin" className="text-white/40 no-underline text-[11px] tracking-widest uppercase hover:text-cyan transition-colors duration-300">
-                Dashboard
-              </Link>
-              <button
-                onClick={logout}
-                className="text-white/40 text-[11px] tracking-widest uppercase hover:text-cyan transition-colors duration-300"
+          {!loading && (
+            user ? (
+              <>
+                <Link href="/admin" className="text-white/40 no-underline text-[11px] tracking-widest uppercase hover:text-cyan transition-colors duration-300">
+                  Dashboard
+                </Link>
+                <button
+                  onClick={logout}
+                  className="text-white/40 text-[11px] tracking-widest uppercase hover:text-cyan transition-colors duration-300"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <Link
+                href="/auth/login"
+                className="px-4 py-2 rounded-lg bg-gradient-to-r from-cyan to-neon-purple text-white text-[11px] tracking-widest uppercase font-semibold hover:opacity-90 transition-opacity"
               >
-                Logout
-              </button>
-            </>
-          ) : (
-            <Link
-              href="/auth/login"
-              className="px-4 py-2 rounded-lg bg-gradient-to-r from-cyan to-neon-purple text-white text-[11px] tracking-widest uppercase font-semibold hover:opacity-90 transition-opacity"
-            >
-              Get Started
-            </Link>
+                Get Started
+              </Link>
+            )
           )}
         </div>
         
-        <button className="md:hidden flex flex-col gap-[5px] cursor-none p-1" onClick={() => setMobileOpen(!mobileOpen)}>
-          <span className="block w-6 h-px bg-cyan transition-all duration-300"></span>
-          <span className="block w-6 h-px bg-cyan transition-all duration-300"></span>
-          <span className="block w-6 h-px bg-cyan transition-all duration-300"></span>
+        <button
+          className="md:hidden flex flex-col justify-center gap-[5px] cursor-none w-10 h-10 p-2 -mr-2"
+          onClick={() => setMobileOpen(!mobileOpen)}
+          aria-label={mobileOpen ? "Close menu" : "Open menu"}
+          aria-expanded={mobileOpen}
+        >
+          <span className={`block w-6 h-px bg-cyan transition-all duration-300 ${mobileOpen ? "translate-y-[6px] rotate-45" : ""}`}></span>
+          <span className={`block w-6 h-px bg-cyan transition-all duration-300 ${mobileOpen ? "opacity-0" : ""}`}></span>
+          <span className={`block w-6 h-px bg-cyan transition-all duration-300 ${mobileOpen ? "-translate-y-[6px] -rotate-45" : ""}`}></span>
         </button>
       </nav>
       
-      <div className={`${mobileOpen ? 'flex' : 'hidden'} md:hidden fixed top-16 left-0 right-0 z-[999] bg-[#0a0a0a]/98 border-b border-white/[0.06] px-6 py-4 flex-col gap-4`}>
-        <Link href="/" className="text-white/60 no-underline py-2 border-b border-white/[0.06] block text-sm" onClick={() => setMobileOpen(false)}>
-          SAYED
+      <div className={`${mobileOpen ? 'flex' : 'hidden'} md:hidden fixed top-16 left-0 right-0 bottom-0 z-[999] bg-[#0a0a0a] border-b border-white/[0.06] px-6 py-4 flex-col gap-4 overflow-y-auto`}>
+        <Link href="/" className="text-cyan bg-gradient-to-r from-cyan to-neon-purple bg-clip-text text-transparent no-underline py-2 border-b border-white/[0.06] block text-base font-playfair font-bold tracking-wider" onClick={() => setMobileOpen(false)}>
+          The Technocrat
         </Link>
         {isHomePage && navItems.map((item) => (
           <a key={item.href} href={item.href} className="text-white/60 no-underline py-2 border-b border-white/[0.06] block text-sm" onClick={() => setMobileOpen(false)}>
@@ -109,19 +127,21 @@ export function Navbar() {
         <Link href="/blog" className="text-white/60 no-underline py-2 block text-sm" onClick={() => setMobileOpen(false)}>
           Blog
         </Link>
-        {user ? (
-          <>
-            <Link href="/admin" className="text-white/60 no-underline py-2 block text-sm" onClick={() => setMobileOpen(false)}>
-              Dashboard
+        {!loading && (
+          user ? (
+            <>
+              <Link href="/admin" className="text-white/60 no-underline py-2 block text-sm" onClick={() => setMobileOpen(false)}>
+                Dashboard
+              </Link>
+              <button onClick={() => { logout(); setMobileOpen(false); }} className="text-white/60 no-underline py-2 block text-sm text-left">
+                Logout
+              </button>
+            </>
+          ) : (
+            <Link href="/auth/login" className="text-white/60 no-underline py-2 block text-sm" onClick={() => setMobileOpen(false)}>
+              Get Started
             </Link>
-            <button onClick={() => { logout(); setMobileOpen(false); }} className="text-white/60 no-underline py-2 block text-sm text-left">
-              Logout
-            </button>
-          </>
-        ) : (
-          <Link href="/auth/login" className="text-white/60 no-underline py-2 block text-sm" onClick={() => setMobileOpen(false)}>
-            Get Started
-          </Link>
+          )
         )}
       </div>
     </>

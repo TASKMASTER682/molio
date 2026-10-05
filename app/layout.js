@@ -6,6 +6,7 @@ import { NavbarWrapper } from "./components/NavbarWrapper";
 import { AuthProvider } from "./context/AuthContext";
 
 export const metadata = {
+  metadataBase: new URL("https://thetechnocrat.com"),
   title: "The Technocrat | Developer & UPSC Aspirant",
   description: "Developer & UPSC Aspirant from Srinagar, J&K. Code. Culture. Constitution.",
   keywords: "The Technocrat, developer, full stack, coder, Srinagar, Kashmir, portfolio, UPSC, React",
