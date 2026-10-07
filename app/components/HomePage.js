@@ -870,10 +870,10 @@ export default function HomePage({ projects: initialProjects, skills: initialSki
               The <span style={{ color: "var(--accent)" }}>Human</span> Behind the Code
             </h2>
             <p className="text-[var(--pencil)]/80 leading-relaxed mb-4 text-sm">
-              I&apos;m <strong style={{ color: "var(--ink)" }}>Sayed Anwar</strong> — a full-stack developer from Srinagar, Kashmir, focused on exam and education platforms that work for real users at real scale.
+              I&apos;m <strong style={{ color: "var(--ink)" }}>Sayed Anwar</strong> — a full-stack developer from Srinagar, Kashmir, that work for real users at real scale.
             </p>
             <p className="text-[var(--pencil)]/60 leading-relaxed mb-8 text-sm">
-              Outside of client and product work, I prepare for the UPSC civil-services exam — it keeps me disciplined. When I get free hours, I experiment with motion and 3D on the web.
+              Outside of client and product work, I prepare for the UPSC civil-services exam — it keeps me disciplined. When I get free hours, I experiment and buid projects for clients on the web.
             </p>
             <a
               href="/resume.pdf"
