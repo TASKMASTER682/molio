@@ -17,7 +17,12 @@ export default function SettingsPage() {
     try {
       const res = await fetch(`${API_URL}/api/settings`);
       const json = await res.json();
-      setSettings(json?.data || json || null);
+      const data = json?.data || json || null;
+      if (data) {
+        const stats = Array.isArray(data.proofStats) ? data.proofStats : [];
+        data.proofStats = [...stats, ...Array(4).fill(null)].slice(0, 4).map(s => s || { value: "", label: "" });
+      }
+      setSettings(data);
     } catch (e) {
       console.error(e);
     } finally {
@@ -180,6 +185,44 @@ export default function SettingsPage() {
                     socialLinks: { ...settings.socialLinks, [platform.key]: e.target.value }
                   })}
                   placeholder={`https://${platform.key === 'email' ? 'mailto:' : ''}your-${platform.key}.com/...`}
+                  className="admin-input"
+                  style={{ width: "100%" }}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Proof strip stats */}
+        <div className="admin-card">
+          <h3 style={{ marginBottom: "1rem", color: "#fff" }}>Proof Strip (homepage stats)</h3>
+          <p style={{ color: "rgba(255,255,255,0.5)", marginBottom: "1.5rem", fontSize: "0.875rem" }}>
+            3–4 real numbers shown under the hero. Leave empty to hide the strip. Use only true, verifiable figures.
+          </p>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "1rem" }}>
+            {(settings?.proofStats || []).map((stat, i) => (
+              <div key={i} style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                <input
+                  type="text"
+                  value={stat.value}
+                  onChange={(e) => {
+                    const next = [...settings.proofStats];
+                    next[i] = { ...next[i], value: e.target.value };
+                    setSettings({ ...settings, proofStats: next });
+                  }}
+                  placeholder="e.g. 400+"
+                  className="admin-input"
+                  style={{ width: "100%" }}
+                />
+                <input
+                  type="text"
+                  value={stat.label}
+                  onChange={(e) => {
+                    const next = [...settings.proofStats];
+                    next[i] = { ...next[i], label: e.target.value };
+                    setSettings({ ...settings, proofStats: next });
+                  }}
+                  placeholder="e.g. students on Exam-OS"
                   className="admin-input"
                   style={{ width: "100%" }}
                 />

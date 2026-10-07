@@ -7,12 +7,14 @@ import { AuthProvider } from "./context/AuthContext";
 
 export const metadata = {
   metadataBase: new URL("https://thetechnocrat.com"),
-  title: "The Technocrat | Developer & UPSC Aspirant",
-  description: "Developer & UPSC Aspirant from Srinagar, J&K. Code. Culture. Constitution.",
-  keywords: "The Technocrat, developer, full stack, coder, Srinagar, Kashmir, portfolio, UPSC, React",
+  title: "The Technocrat | Full-Stack Developer for Exam & EdTech Platforms",
+  description:
+    "Full-stack developer from Srinagar, Kashmir. I build exam and education platforms — Next.js, Node.js, MongoDB — that hold up under real traffic. View case studies.",
+  keywords: "The Technocrat, full stack developer, Next.js developer, Node.js, exam platform, EdTech, CBT, Srinagar, Kashmir, portfolio, React",
   openGraph: {
-    title: "The Technocrat | Developer & UPSC Aspirant",
-    description: "Developer & UPSC Aspirant from Srinagar, J&K",
+    title: "The Technocrat | Full-Stack Developer for Exam & EdTech Platforms",
+    description:
+      "I build exam and education platforms that hold up under real traffic. Case studies, client work, and contact.",
   },
 };
 

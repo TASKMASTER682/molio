@@ -28,8 +28,14 @@ export default function SkillsPage() {
     name: "",
     percentage: 80,
     color: "#00f5ff",
+    category: "Other",
+    familiar: false,
   });
   const [editingId, setEditingId] = useState(null);
+
+  const emptyForm = { name: "", percentage: 80, color: "#00f5ff", category: "Other", familiar: false };
+
+  const categoryOptions = ["Frontend", "Backend", "Database", "Tools", "Design", "Other"];
 
   async function fetchSkills() {
     setLoading(true);
@@ -64,7 +70,7 @@ export default function SkillsPage() {
       });
       
       if (res.ok) {
-        setForm({ name: "", percentage: 80, color: "#00f5ff" });
+        setForm(emptyForm);
         setEditingId(null);
         fetchSkills();
       }
@@ -90,6 +96,8 @@ export default function SkillsPage() {
       name: skill.name,
       percentage: skill.percentage,
       color: skill.color || "#00f5ff",
+      category: skill.category || "Other",
+      familiar: !!skill.familiar,
     });
     setEditingId(skill._id);
   }
@@ -124,7 +132,7 @@ export default function SkillsPage() {
 
             <div>
               <label className="block text-[11px] text-white/50 tracking-widest uppercase mb-2">
-                Expertise: {form.percentage}%
+                Expertise: {form.percentage}% <span className="text-white/25">(internal only, not shown on site)</span>
               </label>
               <input
                 type="range"
@@ -143,22 +151,48 @@ export default function SkillsPage() {
               </div>
             </div>
 
-            <div>
-              <label className="block text-[11px] text-white/50 tracking-widest uppercase mb-2">
-                Color
-              </label>
-              <select
-                value={form.color}
-                onChange={(e) => setForm({ ...form, color: e.target.value })}
-                className="ni w-full px-4 py-3 bg-white/[0.04] border border-white/[0.08] rounded-lg text-white text-sm"
-              >
-                {colorOptions.map((opt) => (
-                  <option key={opt.value} value={opt.value} className="bg-[#0a0a0a]">
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-[11px] text-white/50 tracking-widest uppercase mb-2">
+                  Group
+                </label>
+                <select
+                  value={form.category}
+                  onChange={(e) => setForm({ ...form, category: e.target.value })}
+                  className="ni w-full px-4 py-3 bg-white/[0.04] border border-white/[0.08] rounded-lg text-white text-sm"
+                >
+                  {categoryOptions.map((cat) => (
+                    <option key={cat} value={cat} className="bg-[#0a0a0a]">{cat}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-[11px] text-white/50 tracking-widest uppercase mb-2">
+                  Color
+                </label>
+                <select
+                  value={form.color}
+                  onChange={(e) => setForm({ ...form, color: e.target.value })}
+                  className="ni w-full px-4 py-3 bg-white/[0.04] border border-white/[0.08] rounded-lg text-white text-sm"
+                >
+                  {colorOptions.map((opt) => (
+                    <option key={opt.value} value={opt.value} className="bg-[#0a0a0a]">
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
+
+            <label className="flex items-center gap-3 text-sm text-white/70 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={form.familiar}
+                onChange={(e) => setForm({ ...form, familiar: e.target.checked })}
+                className="w-4 h-4 accent-cyan"
+              />
+              Familiar only (show under &ldquo;Familiar with&rdquo;, not core stack)
+            </label>
 
             <div className="flex gap-3 mt-2">
               <button
@@ -173,7 +207,7 @@ export default function SkillsPage() {
                   type="button"
                   onClick={() => {
                     setEditingId(null);
-                    setForm({ name: "", percentage: 80, color: "#00f5ff" });
+                    setForm(emptyForm);
                   }}
                   className="px-4 py-3 rounded-lg bg-white/[0.04] border border-white/[0.08] text-white/60 text-sm hover:text-white transition-colors"
                 >
@@ -200,7 +234,17 @@ export default function SkillsPage() {
                   style={{ backgroundColor: skill.color || "#00f5ff" }}
                 />
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-white font-playfair font-bold text-sm">{skill.name}</h3>
+                  <h3 className="text-white font-playfair font-bold text-sm">
+                    {skill.name}
+                    <span className="ml-2 px-1.5 py-0.5 rounded bg-white/[0.06] text-[9px] uppercase text-white/50">
+                      {skill.category || "Other"}
+                    </span>
+                    {skill.familiar && (
+                      <span className="ml-1.5 px-1.5 py-0.5 rounded bg-yellow-500/10 text-[9px] uppercase text-yellow-300">
+                        familiar
+                      </span>
+                    )}
+                  </h3>
                   <div className="flex items-center gap-2 mt-1">
                     <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden">
                       <div 

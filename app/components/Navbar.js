@@ -47,12 +47,14 @@ export function Navbar() {
 
   const navItems = [
     { href: "#hero", label: "Home" },
+    { href: "#work", label: "Case Studies" },
+    { href: "#services", label: "Services" },
+    { href: "#skills", label: "Stack" },
     { href: "#about", label: "About" },
-    { href: "#skills", label: "Skills" },
-    { href: "#projects", label: "Projects" },
-    { href: "#journey", label: "Journey" },
     { href: "#contact", label: "Contact" },
   ];
+
+  const hireHref = isHomePage ? "#contact" : "/#contact";
 
   return (
     <>
@@ -72,11 +74,29 @@ export function Navbar() {
             ))}
           </ul>
         )}
+        {!isHomePage && (
+          <ul className="hidden md:flex gap-8 list-none m-0 p-0">
+            {navItems.map((item) => (
+              <li key={item.href}>
+                <a href={`/${item.href}`} className="nav-link text-white/50 no-underline text-[11px] tracking-widest uppercase hover:text-cyan transition-colors duration-300">
+                  {item.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )}
         
         <div className="hidden md:flex gap-6 pl-6 border-l border-white/[0.06] items-center">
           <Link href="/blog" className="text-white/40 no-underline text-[11px] tracking-widest uppercase hover:text-cyan transition-colors duration-300">
             Blog
           </Link>
+
+          <a
+            href={hireHref}
+            className="px-4 py-2 rounded-lg bg-gradient-to-r from-cyan to-neon-purple text-white text-[11px] tracking-widest uppercase font-semibold hover:opacity-90 transition-opacity no-underline"
+          >
+            Hire Me
+          </a>
           
           {!loading && (
             user ? (
@@ -123,7 +143,15 @@ export function Navbar() {
             {item.label}
           </a>
         ))}
+        {!isHomePage && navItems.map((item) => (
+          <a key={item.href} href={`/${item.href}`} className="text-white/60 no-underline py-2 border-b border-white/[0.06] block text-sm" onClick={() => setMobileOpen(false)}>
+            {item.label}
+          </a>
+        ))}
         <div className="border-b border-white/[0.06]"></div>
+        <a href={hireHref} className="px-4 py-2 rounded-lg bg-gradient-to-r from-cyan to-neon-purple text-white text-[11px] tracking-widest uppercase font-semibold text-center no-underline" onClick={() => setMobileOpen(false)}>
+          Hire Me
+        </a>
         <Link href="/blog" className="text-white/60 no-underline py-2 block text-sm" onClick={() => setMobileOpen(false)}>
           Blog
         </Link>

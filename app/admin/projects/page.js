@@ -1,7 +1,8 @@
 // app/admin/projects/page.js
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { sanitizeHtml } from "../../../lib/html";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -30,8 +31,48 @@ export default function ProjectsPage() {
     description: "",
     tags: "",
     liveLink: "",
+    type: "own",
+    clientType: "",
+    problem: "",
+    role: "",
+    timeline: "",
+    result: "",
+    hardProblem: "",
+    featured: false,
   });
   const [editingId, setEditingId] = useState(null);
+  const hardRef = useRef(null);
+
+  function wrapHard(before, after = "") {
+    const el = hardRef.current;
+    if (!el) return;
+    const s = el.selectionStart ?? form.hardProblem.length;
+    const e = el.selectionEnd ?? s;
+    const value = form.hardProblem;
+    const next = value.slice(0, s) + before + value.slice(s, e) + after + value.slice(e);
+    setForm((f) => ({ ...f, hardProblem: next }));
+    requestAnimationFrame(() => {
+      el.focus();
+      const pos = e + before.length;
+      el.setSelectionRange(pos, pos);
+    });
+  }
+
+  const emptyForm = {
+    icon: "🌐",
+    title: "",
+    description: "",
+    tags: "",
+    liveLink: "",
+    type: "own",
+    clientType: "",
+    problem: "",
+    role: "",
+    timeline: "",
+    result: "",
+    hardProblem: "",
+    featured: false,
+  };
 
   async function fetchProjects() {
     setLoading(true);
@@ -62,11 +103,14 @@ export default function ProjectsPage() {
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          ...form,
+          hardProblem: form.hardProblem ? sanitizeHtml(form.hardProblem) : "",
+        }),
       });
       
       if (res.ok) {
-        setForm({ icon: "🌐", title: "", description: "", tags: "", liveLink: "" });
+        setForm(emptyForm);
         setEditingId(null);
         fetchProjects();
       }
@@ -94,6 +138,14 @@ export default function ProjectsPage() {
       description: project.description,
       tags: project.tags.join(", "),
       liveLink: project.liveLink,
+      type: project.type || "own",
+      clientType: project.clientType || "",
+      problem: project.problem || "",
+      role: project.role || "",
+      timeline: project.timeline || "",
+      result: project.result || "",
+      hardProblem: project.hardProblem || "",
+      featured: !!project.featured,
     });
     setEditingId(project._id);
   }
@@ -107,7 +159,7 @@ export default function ProjectsPage() {
 
       <div className="grid lg:grid-cols-2 gap-8">
         {/* Add/Edit Form */}
-        <div className="glass-card p-6">
+        <div className="glass-card p-6 min-w-0">
           <h2 className="text-lg font-playfair font-bold text-white mb-4">
             {editingId ? "Edit Project" : "Add New Project"}
           </h2>
@@ -184,6 +236,147 @@ export default function ProjectsPage() {
               />
             </div>
 
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-[11px] text-white/50 tracking-widest uppercase mb-2">
+                  Project Type
+                </label>
+                <select
+                  value={form.type}
+                  onChange={(e) => setForm({ ...form, type: e.target.value })}
+                  className="ni w-full px-4 py-3 bg-white/[0.04] border border-white/[0.08] rounded-lg text-white text-sm"
+                >
+                  <option value="own" className="bg-[#0a0a0a]">Own Product</option>
+                  <option value="client" className="bg-[#0a0a0a]">Client Project</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-[11px] text-white/50 tracking-widest uppercase mb-2">
+                  Timeline
+                </label>
+                <input
+                  type="text"
+                  value={form.timeline}
+                  onChange={(e) => setForm({ ...form, timeline: e.target.value })}
+                  placeholder="e.g. 3 months"
+                  className="ni w-full px-4 py-3 bg-white/[0.04] border border-white/[0.08] rounded-lg text-white text-sm placeholder-white/20"
+                />
+              </div>
+            </div>
+
+            {form.type === "client" && (
+              <div>
+                <label className="block text-[11px] text-white/50 tracking-widest uppercase mb-2">
+                  Client Type (leave blank for NDA)
+                </label>
+                <input
+                  type="text"
+                  value={form.clientType}
+                  onChange={(e) => setForm({ ...form, clientType: e.target.value })}
+                  placeholder="e.g. Local coaching institute"
+                  className="ni w-full px-4 py-3 bg-white/[0.04] border border-white/[0.08] rounded-lg text-white text-sm placeholder-white/20"
+                />
+              </div>
+            )}
+
+            <div>
+              <label className="block text-[11px] text-white/50 tracking-widest uppercase mb-2">
+                Problem (what the client/user faced)
+              </label>
+              <textarea
+                value={form.problem}
+                onChange={(e) => setForm({ ...form, problem: e.target.value })}
+                placeholder="e.g. Paper-based mock tests, no analytics for 400+ students"
+                rows={2}
+                className="ni w-full px-4 py-3 bg-white/[0.04] border border-white/[0.08] rounded-lg text-white text-sm placeholder-white/20 resize-none"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-[11px] text-white/50 tracking-widest uppercase mb-2">
+                  My Role
+                </label>
+                <input
+                  type="text"
+                  value={form.role}
+                  onChange={(e) => setForm({ ...form, role: e.target.value })}
+                  placeholder="e.g. Design + Full-stack dev"
+                  className="ni w-full px-4 py-3 bg-white/[0.04] border border-white/[0.08] rounded-lg text-white text-sm placeholder-white/20"
+                />
+              </div>
+              <div>
+                <label className="block text-[11px] text-white/50 tracking-widest uppercase mb-2">
+                  Result (with numbers if possible)
+                </label>
+                <input
+                  type="text"
+                  value={form.result}
+                  onChange={(e) => setForm({ ...form, result: e.target.value })}
+                  placeholder="e.g. Cut grading time by 80%"
+                  className="ni w-full px-4 py-3 bg-white/[0.04] border border-white/[0.08] rounded-lg text-white text-sm placeholder-white/20"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-[11px] text-white/50 tracking-widest uppercase mb-2">
+                Hard Problem Solved
+              </label>
+              <p className="text-[11px] text-white/35 mb-2">
+                HTML allowed: <code className="text-cyan/70">&lt;p&gt;</code> <code className="text-cyan/70">&lt;b&gt;</code> <code className="text-cyan/70">&lt;i&gt;</code> <code className="text-cyan/70">&lt;a&gt;</code> <code className="text-cyan/70">&lt;h3&gt;</code> <code className="text-cyan/70">&lt;ul&gt;</code> — no inline styles (they get stripped).
+              </p>
+
+              <div className="flex items-center gap-1.5 mb-2 flex-wrap">
+                {[
+                  { label: "B", title: "Bold", before: "<b>", after: "</b>", style: "font-bold" },
+                  { label: "I", title: "Italic", before: "<i>", after: "</i>", style: "italic" },
+                  { label: "H3", title: "Heading", before: "<h3>", after: "</h3>", style: "font-bold" },
+                  { label: "Link", title: "Link", before: '<a href="https://">', after: "</a>", style: "" },
+                  { label: "• List", title: "Bullet list", before: "<ul><li>", after: "</li></ul>", style: "" },
+                ].map((b) => (
+                  <button
+                    key={b.label}
+                    type="button"
+                    title={b.title}
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => wrapHard(b.before, b.after)}
+                    className={`px-2.5 py-1 rounded-md bg-white/[0.05] border border-white/[0.1] text-white/65 text-[11px] hover:text-cyan hover:border-cyan/40 transition-colors ${b.style}`}
+                  >
+                    {b.label}
+                  </button>
+                ))}
+              </div>
+
+              <textarea
+                ref={hardRef}
+                value={form.hardProblem}
+                onChange={(e) => setForm({ ...form, hardProblem: e.target.value })}
+                placeholder="The trickiest technical challenge you solved (HTML ok)"
+                rows={4}
+                className="ni w-full px-4 py-3 bg-white/[0.04] border border-white/[0.08] rounded-lg text-white text-sm placeholder-white/20 resize-y font-mono"
+              />
+
+              {form.hardProblem && (
+                <div className="mt-3">
+                  <p className="text-[10px] tracking-[0.18em] uppercase text-white/35 mb-1.5">Live preview</p>
+                  <div className="rounded-lg border border-white/[0.08] bg-[#0b111a] px-4 py-3 text-[13px] leading-relaxed text-white/70 case-html">
+                    <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(form.hardProblem) }} />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <label className="flex items-center gap-3 text-sm text-white/70 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={form.featured}
+                onChange={(e) => setForm({ ...form, featured: e.target.checked })}
+                className="w-4 h-4 accent-cyan"
+              />
+              Featured (show first in Case Studies)
+            </label>
+
             <div className="flex gap-3 mt-2">
               <button
                 type="submit"
@@ -197,7 +390,7 @@ export default function ProjectsPage() {
                   type="button"
                   onClick={() => {
                     setEditingId(null);
-                    setForm({ icon: "🌐", title: "", description: "", tags: "", liveLink: "" });
+                    setForm(emptyForm);
                   }}
                   className="px-4 py-3 rounded-lg bg-white/[0.04] border border-white/[0.08] text-white/60 text-sm hover:text-white transition-colors"
                 >
@@ -209,7 +402,7 @@ export default function ProjectsPage() {
         </div>
 
         {/* Projects List */}
-        <div className="glass-card p-6">
+        <div className="glass-card p-6 min-w-0">
           <h2 className="text-lg font-playfair font-bold text-white mb-4">
             {loading ? "Loading..." : `${projects.length} Projects`}
           </h2>
@@ -221,7 +414,13 @@ export default function ProjectsPage() {
               >
                 <span className="text-2xl">{project.icon}</span>
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-white font-playfair font-bold text-sm truncate">{project.title}</h3>
+                  <h3 className="text-white font-playfair font-bold text-sm truncate">
+                    {project.title}
+                    {project.featured && <span className="ml-2 text-yellow-400 text-xs">★</span>}
+                    <span className={`ml-2 px-1.5 py-0.5 rounded text-[9px] uppercase ${project.type === "client" ? "bg-purple-500/15 text-purple-300" : "bg-cyan/10 text-cyan"}`}>
+                      {project.type === "client" ? "Client" : "Own"}
+                    </span>
+                  </h3>
                   <p className="text-white/40 text-xs truncate">{project.description}</p>
                   <div className="flex gap-1.5 mt-1.5 flex-wrap">
                     {project.tags.map((tag, i) => (

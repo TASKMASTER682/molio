@@ -1,10 +1,10 @@
 export const metadata = {
   title: 'Blog | The Technocrat',
-  description: 'Explore the latest blog posts by The Technocrat - Full stack developer & UPSC aspirant from Kashmir. Read about web development, programming, and technology insights.',
-  keywords: ['blog', 'web development', 'programming', 'tech', 'developer', 'UPSC', 'Kashmir'],
+  description: 'Blog by The Technocrat - full-stack developer from Kashmir. Web development, programming, and technology insights.',
+  keywords: ['blog', 'web development', 'programming', 'tech', 'developer', 'Next.js', 'Kashmir'],
   openGraph: {
     title: 'Blog | The Technocrat',
-    description: 'Explore the latest blog posts by The Technocrat - Full stack developer & UPSC aspirant from Kashmir.',
+    description: 'Blog by The Technocrat - full-stack developer from Kashmir. Web development, programming, and technology insights.',
     type: 'website',
     locale: 'en_US',
     siteName: 'The Technocrat',
